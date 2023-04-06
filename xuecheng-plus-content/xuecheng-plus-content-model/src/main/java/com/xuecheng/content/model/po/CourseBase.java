@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @TableName("course_base")
 public class CourseBase implements Serializable {
 
+
     private static final long serialVersionUID = 1L;
 
     /**
