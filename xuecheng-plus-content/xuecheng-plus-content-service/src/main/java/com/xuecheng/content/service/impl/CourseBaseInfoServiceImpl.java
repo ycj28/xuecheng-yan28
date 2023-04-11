@@ -57,33 +57,33 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     @Override
     public CourseBaseInfoDto createCourseBae(Long companyId,AddCourseDto dto) {
         // 参数的合法性校验
-        if (StringUtils.isBlank(dto.getName())) {
-            XueChengPlusException.cast("课程名称为空");
-        }
-
-        if (StringUtils.isBlank(dto.getMt())) {
-            throw new RuntimeException("课程分类为空");
-        }
-
-        if (StringUtils.isBlank(dto.getSt())) {
-            throw new RuntimeException("课程分类为空");
-        }
-
-        if (StringUtils.isBlank(dto.getGrade())) {
-            throw new RuntimeException("课程等级为空");
-        }
-
-        if (StringUtils.isBlank(dto.getTeachmode())) {
-            throw new RuntimeException("教育模式为空");
-        }
-
-        if (StringUtils.isBlank(dto.getUsers())) {
-            throw new RuntimeException("适应人群为空");
-        }
-
-        if (StringUtils.isBlank(dto.getCharge())) {
-            throw new RuntimeException("收费规则为空");
-        }
+//        if (StringUtils.isBlank(dto.getName())) {
+//            XueChengPlusException.cast("课程名称为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getMt())) {
+//            throw new RuntimeException("课程分类为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getSt())) {
+//            throw new RuntimeException("课程分类为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getGrade())) {
+//            throw new RuntimeException("课程等级为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getTeachmode())) {
+//            throw new RuntimeException("教育模式为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getUsers())) {
+//            throw new RuntimeException("适应人群为空");
+//        }
+//
+//        if (StringUtils.isBlank(dto.getCharge())) {
+//            throw new RuntimeException("收费规则为空");
+//        }
 
         // 向课程基本信息表course_base写入数据
         CourseBase courseBase = new CourseBase();
