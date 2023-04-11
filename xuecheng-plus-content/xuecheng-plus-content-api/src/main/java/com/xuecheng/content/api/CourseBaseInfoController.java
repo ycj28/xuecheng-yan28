@@ -43,6 +43,7 @@ public class CourseBaseInfoController {
     @PostMapping("/course")
     public CourseBaseInfoDto createCourseBase(@RequestBody AddCourseDto addCourseDto){
         Long companyId = 1232141425L;
+//        int i = 1/0;
         CourseBaseInfoDto courseBaseInfoDto = courseBaseInfoService.createCourseBae(companyId, addCourseDto);
         return courseBaseInfoDto;
     }
