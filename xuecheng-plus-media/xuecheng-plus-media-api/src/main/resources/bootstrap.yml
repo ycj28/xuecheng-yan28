@@ -1,24 +1,20 @@
-server:
-  servlet:
-    context-path: /system
-  port: 63110
 #微服务配置
 spring:
   application:
-    name: system-api
+    name: media-api
   cloud:
     nacos:
       server-addr: 192.168.101.65:8848
-      discovery: # 注册中心相关配置
+      discovery:
         namespace: dev402
         group: xuecheng-plus-project
-      config: # 配置中心相关信息
+      config:
         namespace: dev402
         group: xuecheng-plus-project
         file-extension: yaml
         refresh-enabled: true
         extension-configs:
-          - data-id: system-service-${spring.profiles.active}.yaml
+          - data-id: media-service-${spring.profiles.active}.yaml
             group: xuecheng-plus-project
             refresh: true
         shared-configs:
@@ -29,6 +25,5 @@ spring:
             group: xuecheng-plus-common
             refresh: true
   profiles:
-    active: dev # 环境名 => content-api-dev.yaml
-
+    active: dev
 
