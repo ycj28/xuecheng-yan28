@@ -3,6 +3,8 @@ package com.xuecheng.media.service;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
 import com.xuecheng.media.model.dto.QueryMediaParamsDto;
+import com.xuecheng.media.model.dto.UploadFileParamsDto;
+import com.xuecheng.media.model.dto.UploadFileResultDto;
 import com.xuecheng.media.model.po.MediaFiles;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -26,5 +28,12 @@ public interface MediaFileService {
  */
  public PageResult<MediaFiles> queryMediaFiels(Long companyId,PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto);
 
-
+ /**
+  * 上传文件
+  * @param company 机构id
+  * @param uploadFileParamsDto 文件信息
+  * @param localFilePath 文件本地路径
+  * @return
+  */
+ public UploadFileResultDto uploadFile(Long company, UploadFileParamsDto uploadFileParamsDto, String localFilePath);
 }
