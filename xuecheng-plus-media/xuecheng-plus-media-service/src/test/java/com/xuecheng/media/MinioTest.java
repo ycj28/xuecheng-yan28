@@ -6,21 +6,31 @@ import io.minio.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FilterInputStream;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MinioTest {
+
+    @Value("${spring.datasource.url}")
+    private String bucket_mediafiles;
 
     MinioClient minioClient =
             MinioClient.builder()
                     .endpoint("http://192.168.101.65:9000")
                     .credentials("minioadmin", "minioadmin")
                     .build();
+
+    @Test
+    public void test(){
+        System.err.println(bucket_mediafiles);
+    }
 
     @Test
     public void test_upload() throws Exception {
@@ -73,6 +83,49 @@ public class MinioTest {
         if (sources.equals(local)) {
             System.out.println("下载成功");
         }
-
     }
+
+    // 将分块文件上传到minio
+    @Test
+    public void uploadChunk() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            UploadObjectArgs testbucket = UploadObjectArgs.builder()
+                    .bucket("testbucket") // 桶名
+                    .object("第3章媒资管理模块v3.1.docx") // 对象名 在根目录存储该文件
+                    .object("test/chunk/"+i) // 对象名 放在子目录下
+                    .filename("D:\\1. Spring Boot入门\\chunk\\"+i) // 本地文件路径
+                    .build();
+
+            // 上传文件
+            minioClient.uploadObject(testbucket);
+            System.out.println("上传分块"+i+"成功");
+        }
+    }
+
+    // 调用minio接口合并分块
+    @Test
+    public void testMerge() throws Exception {
+//        List<ComposeSource> sources = new ArrayList<>();
+//        for (int i = 0; i < 21; i++) {
+//            // 指定分块文件信息
+//            ComposeSource build = ComposeSource.builder().bucket("testbucket").object("test/chunk/" + i).build();
+//            sources.add(build);
+//        }
+
+        List<ComposeSource> sources = Stream.iterate(0, i -> ++i).limit(5)
+                .map(i -> ComposeSource.builder().bucket("testbucket")
+                        .object("test/chunk/" + i).build()).collect(Collectors.toList());
+
+        // 指定合并后的objectName等信息
+        ComposeObjectArgs testbucket = ComposeObjectArgs.builder()
+                .bucket("testbucket")
+                .object("test/merge/merge01.mp4")
+                .sources(sources) // 置顶源文件
+                .build();
+        // 合并文件
+        // 报错size 1048576 must be greater than 5242880，minio默认分块大小是5M
+        minioClient.composeObject(testbucket);
+    }
+
+    // 批量清理分块文件
 }

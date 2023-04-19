@@ -36,3 +36,13 @@ GET {{content_host}}/content/course/40
 
 ### 课程计划查询
 GET {{content_host}}/content/teachplan/117/tree-nodes
+
+### 上传文件
+POST {{ gateway_host }}/media/upload/coursefile
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="filedata"; filename="1.jpg"
+Content-Type: application/octet-stream
+
+< d:/develop/upload/1.jpg
