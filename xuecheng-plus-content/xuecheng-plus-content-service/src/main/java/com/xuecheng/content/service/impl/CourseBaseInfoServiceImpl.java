@@ -1,21 +1,19 @@
 package com.xuecheng.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.xuecheng.base.exception.XueChengPlusException;
 import com.xuecheng.base.model.PageParams;
 import com.xuecheng.base.model.PageResult;
-import com.xuecheng.content.mapper.CourseBaseMapper;
-import com.xuecheng.content.mapper.CourseCategoryMapper;
-import com.xuecheng.content.mapper.CourseMarketMapper;
+import com.xuecheng.content.mapper.*;
 import com.xuecheng.content.model.dto.AddCourseDto;
 import com.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.xuecheng.content.model.dto.EditCourseDto;
 import com.xuecheng.content.model.dto.QueryCourseParamsDto;
-import com.xuecheng.content.model.po.CourseBase;
-import com.xuecheng.content.model.po.CourseCategory;
-import com.xuecheng.content.model.po.CourseMarket;
+import com.xuecheng.content.model.po.*;
 import com.xuecheng.content.service.CourseBaseInfoService;
+import com.xuecheng.content.service.CourseTeacherService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -24,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -36,6 +35,12 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
     private CourseMarketMapper courseMarketMapper;
     @Autowired
     private CourseCategoryMapper courseCategoryMapper;
+    @Autowired
+    private TeachplanMapper teachplanMapper;
+    @Autowired
+    private TeachplanMediaMapper teachplanMediaMapper;
+    @Autowired
+    private CourseTeacherMapper courseTeacherMapper;
 
     @Override
     public PageResult<CourseBase> queryCourseBaseList(PageParams pageParams, QueryCourseParamsDto dto) {
@@ -146,6 +151,48 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         // 查询课程信息
         CourseBaseInfoDto courseBaseInfo = getCourseBaseInfo(courseId);
         return courseBaseInfo;
+    }
+
+    @Override
+    @Transactional
+    public void deleteCourse(Long courseId) {
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if (!courseBase.getAuditStatus().equals("202002")) {
+            XueChengPlusException.cast("课程已经提交审核，不能删除！");
+            return;
+        }
+        // 删除课程基本信息
+        int rows = courseBaseMapper.deleteById(courseId);
+        if (rows != 1){
+            XueChengPlusException.cast("删除课程基本信息失败");
+        }
+        // 删除课程营销信息
+        rows = courseMarketMapper.deleteById(courseId);
+        if (rows != 1){
+            XueChengPlusException.cast("删除课程营销信息失败");
+        }
+        // 删除课程计划信息
+        LambdaQueryWrapper<Teachplan> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Teachplan::getCourseId,courseId);
+        rows = teachplanMapper.delete(queryWrapper);
+        if (rows < 0){
+            XueChengPlusException.cast("删除课程计划失败");
+        }
+
+        LambdaQueryWrapper<TeachplanMedia> teachplanMediaWrapper = new LambdaQueryWrapper<>();
+        teachplanMediaWrapper.eq(TeachplanMedia::getCourseId,courseId);
+        rows = teachplanMediaMapper.delete(teachplanMediaWrapper);
+        if (rows < 0){
+            XueChengPlusException.cast("删除课程计划相关媒资失败");
+        }
+
+        // 删除课程教师信息表
+        LambdaQueryWrapper<CourseTeacher> courseTeacherQueryWrapper = new LambdaQueryWrapper<>();
+        courseTeacherQueryWrapper.eq(CourseTeacher::getCourseId,courseId);
+        rows = courseTeacherMapper.delete(courseTeacherQueryWrapper);
+        if (rows < 0){
+            XueChengPlusException.cast("删除课程教师信息失败");
+        }
     }
 
     // 保存营销信息
