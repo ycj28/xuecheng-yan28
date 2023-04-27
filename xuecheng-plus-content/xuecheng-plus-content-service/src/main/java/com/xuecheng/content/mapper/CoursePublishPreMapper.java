@@ -2,6 +2,7 @@ package com.xuecheng.content.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xuecheng.content.model.po.CoursePublishPre;
+import org.apache.ibatis.annotations.Mapper;
 
 /**
  * <p>
@@ -10,6 +11,7 @@ import com.xuecheng.content.model.po.CoursePublishPre;
  *
  * @author itcast
  */
+@Mapper
 public interface CoursePublishPreMapper extends BaseMapper<CoursePublishPre> {
 
 }

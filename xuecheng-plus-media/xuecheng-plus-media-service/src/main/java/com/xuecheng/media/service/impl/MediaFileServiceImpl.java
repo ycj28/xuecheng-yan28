@@ -145,6 +145,12 @@ public class MediaFileServiceImpl implements MediaFileService {
         return false;
     }
 
+    @Override
+    public MediaFiles getFileById(String mediaId) {
+        MediaFiles mediaFiles = mediaFilesMapper.selectById(mediaId);
+        return mediaFiles;
+    }
+
 
     @Override
     public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String localFilePath) {
