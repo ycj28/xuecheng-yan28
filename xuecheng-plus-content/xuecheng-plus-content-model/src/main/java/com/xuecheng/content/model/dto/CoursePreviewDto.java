@@ -1,5 +1,6 @@
 package com.xuecheng.content.model.dto;
 
+import com.xuecheng.content.model.po.CourseTeacher;
 import lombok.Data;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public class CoursePreviewDto {
     private List<TeachplanDto> teachplans;
 
     // 课程师资信息...
-
+    private List<CourseTeacher> courseTeachers;
 }

@@ -24,8 +24,6 @@ public interface MediaFileService {
      * @param queryMediaParamsDto 查询条件
      * @return com.xuecheng.base.model.PageResult<com.xuecheng.media.model.po.MediaFiles>
      * @description 媒资文件查询方法
-     * @author Mr.M
-     * @date 2022/9/10 8:57
      */
     public PageResult<MediaFiles> queryMediaFiels(Long companyId, PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto);
 
@@ -35,9 +33,10 @@ public interface MediaFileService {
      * @param company             机构id
      * @param uploadFileParamsDto 文件信息
      * @param localFilePath       文件本地路径
+     * @param objectName       如果传入objectName就按照objectName的目录存，如果不传则按照默认方式
      * @return
      */
-    public UploadFileResultDto uploadFile(Long company, UploadFileParamsDto uploadFileParamsDto, String localFilePath);
+    public UploadFileResultDto uploadFile(Long company, UploadFileParamsDto uploadFileParamsDto, String localFilePath,String objectName);
 
 
     public MediaFiles addMediaFilesToDb(Long companyId, String fileMd5, UploadFileParamsDto uploadFileParamsDto, String bucket, String objectName);
